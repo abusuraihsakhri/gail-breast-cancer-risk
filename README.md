@@ -1,5 +1,7 @@
 # Gail Breast Cancer Risk — Research and Demonstration Toolkit
 
+### [Open the Live Application →](https://abusuraihsakhri.github.io/gail-breast-cancer-risk/)
+
 This repository contains a **browser-only NCI BCRAT input checklist**, a Python collection of clinical calculation helpers, and a **separate demonstration-only** FastAPI rules engine with an in-memory HMAC audit log.
 
 **Clinical limitation:** No calibrated Gail/BCRAT absolute-risk calculation is implemented here. The generic score and operational alert thresholds are arbitrary examples, **not** estimates of 5-year or lifetime breast-cancer risk. Use the [NCI Breast Cancer Risk Assessment Tool](https://bcrisktool.cancer.gov/) for validated estimates, subject to its eligibility and limitations.
@@ -8,7 +10,7 @@ This repository contains a **browser-only NCI BCRAT input checklist**, a Python 
 
 Open `docs/index.html` directly in a browser to prepare non-identifying risk-factor answers, review them, and open the official NCI calculator. The checklist does not estimate risk; answers are not transmitted, saved to browser storage, or transferred automatically to the NCI website. Do not enter patient identifiers.
 
-GitHub Pages deployment is defined in `.github/workflows/pages.yml`; availability depends on Pages being enabled for this repository. Until independently verified, use the local file or the NCI calculator directly.
+The checklist is deployed through GitHub Pages by `.github/workflows/pages.yml`. It does not compute Gail/BCRAT risk; use the linked official NCI calculator for risk estimation.
 
 ## Python functions
 
