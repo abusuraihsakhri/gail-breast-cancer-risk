@@ -102,3 +102,28 @@ def test_static_checklist_does_not_fabricate_risk():
     assert "does not calculate breast-cancer risk" in html
     assert "https://bcrisktool.cancer.gov/" in html
     assert "localStorage" not in html
+
+
+def test_http_console_and_authenticated_api(monkeypatch):
+    from fastapi.testclient import TestClient
+    from agents.api import app
+    monkeypatch.setenv("GAIL_API_KEY", "http-test-key")
+    with TestClient(app) as client:
+        assert client.get("/health").status_code == 200
+        page = client.get("/")
+        assert page.status_code == 200
+        assert "Operational rules console" in page.text
+        payload = {
+            "task_id": "DEMO-HTTP-1", "target_identifier": "DEMO-TARGET",
+            "primary_metric": 15.0, "secondary_metric": 2.0,
+        }
+        assert client.post("/api/audit", json=payload).status_code == 401
+        accepted = client.post("/api/audit", json=payload, headers={"X-API-Key": "http-test-key"})
+        assert accepted.status_code == 200
+        assert accepted.json()["task_id"] == "DEMO-HTTP-1"
+        assert client.get("/api/audit/logs").status_code == 401
+        logs = client.get("/api/audit/logs", headers={"X-API-Key": "http-test-key"})
+        assert logs.status_code == 200
+        assert logs.json()["verified"] is True
+        bad = dict(payload, primary_metric="NaN")
+        assert client.post("/api/audit", json=bad, headers={"X-API-Key": "http-test-key"}).status_code == 422
