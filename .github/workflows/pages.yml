@@ -31,3 +31,19 @@ jobs:
           path: docs
       - id: deployment
         uses: actions/deploy-pages@v4
+      - name: Smoke test public checklist URL
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            if curl --fail --silent --show-error --location "$PAGE_URL" --output /tmp/pages-home.html \
+              && grep --fixed-strings --quiet "Gail / BCRAT preparation checklist" /tmp/pages-home.html \
+              && grep --fixed-strings --quiet "https://bcrisktool.cancer.gov/" /tmp/pages-home.html; then
+              echo "Verified published checklist at $PAGE_URL"
+              exit 0
+            fi
+            echo "Live site not ready; attempt $attempt of 10"
+            sleep 8
+          done
+          echo "Public checklist smoke test failed" >&2
+          exit 1
