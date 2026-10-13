@@ -78,7 +78,7 @@ def test_non_finite_numeric_inputs_are_rejected(input_value):
 def test_csv_outputs_have_stable_column_order(tmp_path):
     source = tmp_path / "rows.csv"
     output = tmp_path / "out.csv"
-    source.write_text("qt_ms,rr_ms\\n400,1000\\n", encoding="utf-8")
+    source.write_text("qt_ms,rr_ms\n400,1000\n", encoding="utf-8")
     process_csv(source, output)
     columns = output.read_text(encoding="utf-8").splitlines()[0].split(",")
     assert columns[:2] == ["qt_ms", "rr_ms"]
@@ -90,7 +90,7 @@ def test_browser_script_has_valid_syntax(relative, tmp_path):
     if not shutil.which("node"):
         pytest.skip("node is not available")
     page = (Path(__file__).resolve().parents[1] / relative).read_text(encoding="utf-8")
-    matches = re.findall(r"<script(?:\\s[^>]*)?>(.*?)</script>", page, flags=re.DOTALL)
+    matches = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", page, flags=re.DOTALL)
     assert len(matches) == 1
     script = tmp_path / "script.js"
     script.write_text(matches[0], encoding="utf-8")
