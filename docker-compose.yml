@@ -1,14 +1,11 @@
-version: '3.8'
-
 services:
   gail-breast-cancer-risk:
     build: .
-    container_name: gail-breast-cancer-risk
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     environment:
-      - AUDIT_SECRET_KEY=gail-breast-cancer-risk-prod-audit-key-2026
-      - MODEL_PROVIDER=mock
+      AUDIT_SECRET_KEY: "${AUDIT_SECRET_KEY:?Set a unique AUDIT_SECRET_KEY in your environment}"
+      GAIL_API_KEY: "${GAIL_API_KEY:?Set a unique GAIL_API_KEY in your environment}"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]

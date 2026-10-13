@@ -24,13 +24,19 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install fastapi uvicorn pydantic pytest
+        pip install -e ".[test]"
+
+    - name: Verify source compiles
+      run: python -m compileall -q .
 
     - name: Run Pytest Suite
       run: |
         pytest -v
 
-    - name: Security SAST & Zero-PHI Audit
+    - name: Security regression tests
+      run: pytest -q tests/test_security_and_browser.py
+
+    - name: Audit trail initialization smoke test
       run: |
         python -c "
         from agents.base import PHIGuard, AuditLogger

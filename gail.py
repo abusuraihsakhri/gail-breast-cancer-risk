@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Gail Breast Cancer Risk Model
-Gail 5-year and lifetime risk approximation from questionnaire with SEER calibration stub.
+This module does not implement the calibrated Gail/BCRAT risk algorithm.
 Includes clinical calculation helpers: MELD-Na, QTc, BMI z-score, HbA1c, APRI/FIB-4.
 Stdlib only.
 """
@@ -13,13 +13,14 @@ def _safe_float(value, default=0.0):
     if value is None:
         return default
     try:
-        return float(value)
-    except (TypeError, ValueError):
+        number = float(value)
+        return number if math.isfinite(number) else default
+    except (TypeError, ValueError, OverflowError):
         return default
 
 
 def calculate_score(**kwargs):
-    """Generic formula stub: weighted sum of numeric inputs."""
+    """Legacy numeric demonstration score; NOT a breast-cancer risk estimate."""
     vals = [float(v) for v in kwargs.values()
              if isinstance(v, (int, float)) or
              (isinstance(v, str) and v.replace('.', '', 1).replace('-', '', 1).isdigit())]
@@ -28,7 +29,8 @@ def calculate_score(**kwargs):
     # distinct per-project via slug hash
     h = sum(ord(c) for c in "gail-breast-cancer-risk") % 10
     score = sum(vals) * (0.9 + h * 0.02) + math.log1p(len(vals))
-    return {"score": round(score, 2), "inputs": len(vals)}
+    return {"score": round(score, 2), "inputs": len(vals),
+            "clinical_validity": "not validated; never use as a Gail/BCRAT risk estimate"}
 
 
 def calculate_meld_na(bilirubin, creatinine, inr=None, sodium=None, dialysis=False, albumin=None, sex="M"):
@@ -186,6 +188,16 @@ def calculate_apri_fib4(ast_u_l, alt_u_l=None, platelets_109=None, age_years=Non
 def assess_row(row):
     """Route a row dict to the appropriate clinical calculation."""
     try:
+        bcrat_fields = {
+            "age_at_menarche", "age_at_first_live_birth", "first_degree_relatives",
+            "breast_biopsies", "atypical_hyperplasia", "race_ethnicity",
+        }
+        if bcrat_fields.intersection(row):
+            return {
+                "error": "Gail/BCRAT absolute risk estimation is not implemented. "
+                         "Use the validated NCI Breast Cancer Risk Assessment Tool.",
+                "reference": "https://bcrisktool.cancer.gov/",
+            }
         if "bilirubin" in row and "creatinine" in row:
             return calculate_meld_na(
                 row.get("bilirubin"), row.get("creatinine"),
@@ -218,7 +230,7 @@ def assess_row(row):
 def process_csv(inp, out):
     import csv
     with open(inp, newline="", encoding="utf-8-sig") as f:
-        r = csv.DictReader(f); rows=list(r); fieldnames=r.fieldnames
+        r = csv.DictReader(f); rows=list(r); fieldnames=r.fieldnames or []
     results=[]
     for row in rows:
         res = assess_row(row)
@@ -228,7 +240,7 @@ def process_csv(inp, out):
     all_keys=set()
     for rr in results: all_keys.update(rr.keys())
     # keep original first
-    extra = [k for k in all_keys if k not in fieldnames]
+    extra = sorted(k for k in all_keys if k not in fieldnames)
     with open(out, "w", newline="", encoding="utf-8") as f:
         w=csv.DictWriter(f, fieldnames=list(fieldnames)+extra); w.writeheader(); w.writerows(results)
     return results

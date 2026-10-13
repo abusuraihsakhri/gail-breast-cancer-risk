@@ -1,236 +1,112 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gail Breast Cancer Risk — Operations Console</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #090d16;
-            --card: #111827;
-            --border: #1f293d;
-            --accent: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.25);
-            --text: #f3f4f6;
-            --text-muted: #9ca3af;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --success: #10b981;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            padding: 2rem;
-            min-height: 100vh;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .header-title h1 { font-size: 1.6rem; font-weight: 700; color: #fff; }
-        .header-title p { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem; }
-        .badge {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: var(--accent-glow);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 1.5rem;
-        }
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-        .card h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .form-group { margin-bottom: 1rem; }
-        label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; }
-        input, select, textarea {
-            width: 100%;
-            padding: 0.65rem 0.9rem;
-            background: #0d1322;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: #fff;
-            font-family: inherit;
-            font-size: 0.9rem;
-        }
-        input:focus, textarea:focus { outline: none; border-color: var(--accent); }
-        .btn {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            padding: 0.7rem 1.4rem;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            width: 100%;
-        }
-        .btn:hover { background: #2563eb; }
-        .terminal {
-            background: #060911;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            color: #10b981;
-            height: 380px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-        }
-        .metrics-bar {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .metric-box {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-        }
-        .metric-val { font-size: 1.4rem; font-weight: 700; color: #fff; margin-top: 0.25rem; }
-        .metric-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Operational Rules Console · Gail Breast Cancer Risk Repository</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0b1220;--panel:#151f31;--line:#354258;--text:#eef2fa;--muted:#b1bed3;--accent:#80b6ff}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,sans-serif}
+    main{max-width:1050px;margin:auto;padding:28px 20px 60px}
+    h1{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 8px}h2{font-size:1.15rem;margin:0 0 14px}
+    p{color:var(--muted);margin:0 0 18px}
+    .notice{padding:14px 18px;border:1px solid #8c633e;border-radius:8px;background:#2b211d;margin:20px 0}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px}
+    label{display:block;font-weight:550;margin:12px 0 5px}
+    input:not([type=checkbox]),select{display:block;width:100%;min-width:0;border-radius:6px;border:1px solid #677994;background:#0b1220;color:var(--text);padding:9px;font:inherit}
+    input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+    .check{display:flex;gap:10px;align-items:center;margin:15px 0}
+    .check input{width:18px;height:18px}button{background:var(--accent);border:0;border-radius:7px;color:#07111e;font-weight:700;padding:12px 16px;cursor:pointer;width:100%;font-size:1rem}
+    button:disabled{opacity:.6;cursor:progress}
+    pre{background:#070c16;border:1px solid var(--line);border-radius:8px;white-space:pre-wrap;overflow-wrap:anywhere;padding:15px;min-height:250px;max-height:580px;overflow:auto;font-size:.85rem}
+    .stats{margin:0 0 18px;color:var(--muted)}a{color:#a9ceff}small{color:var(--muted)}
+    @media(max-width:750px){.grid{grid-template-columns:1fr}main{padding:16px}}
+  </style>
 </head>
-<body>
-
-    <div class="header">
-        <div class="header-title">
-            <h1>Gail Breast Cancer Risk</h1>
-            <p>Domain: Clinical & Cryptographic AI | Standard: CAP / CLSI / NIST Standards | LabMind-Atlas Architecture</p>
-        </div>
-        <div>
-            <span class="badge">Air-Gapped Active</span>
-            <span class="badge" style="background: rgba(16,185,129,0.2); color: #10b981; border-color: #10b981;">Zero-PHI Guard Active</span>
-        </div>
-    </div>
-
-    <div class="metrics-bar">
-        <div class="metric-box">
-            <div class="metric-label">System Status</div>
-            <div class="metric-val" style="color: var(--success);" id="m-status">OPTIMAL</div>
-        </div>
-        <div class="metric-box">
-            <div class="metric-label">Tasks Processed</div>
-            <div class="metric-val" id="m-tasks">142</div>
-        </div>
-        <div class="metric-box">
-            <div class="metric-label">Audit Blocks Signed</div>
-            <div class="metric-val" id="m-audit">142</div>
-        </div>
-        <div class="metric-box">
-            <div class="metric-label">PHI Interceptions</div>
-            <div class="metric-val" style="color: var(--accent);" id="m-phi">0</div>
-        </div>
-    </div>
-
-    <div class="grid">
-        <div class="card">
-            <h2>⚙️ Dispatch Distributed Component Audit</h2>
-            <div class="form-group">
-                <label>Task / Sample ID</label>
-                <input type="text" id="task_id" value="TASK-2026-LIVE-01">
-            </div>
-            <div class="form-group">
-                <label>Target Identifier</label>
-                <input type="text" id="target_id" value="SPECIMEN-ALPHA-77">
-            </div>
-            <div class="form-group">
-                <label>Primary Measurement / Value</label>
-                <input type="number" id="primary_metric" value="29.4" step="0.1">
-            </div>
-            <div class="form-group">
-                <label>Secondary Metric / Kinetic Index</label>
-                <input type="number" id="secondary_metric" value="14.8" step="0.1">
-            </div>
-            <div class="form-group">
-                <label>Status / Phenotype Descriptor</label>
-                <input type="text" id="status_descriptor" value="DISCORDANT_ANOMALY">
-            </div>
-            <div class="form-group">
-                <label><input type="checkbox" id="is_critical" checked> Trigger Emergency / Critical Flag</label>
-            </div>
-            <button class="btn" onclick="runAudit()">Execute Distributed Component Audit</button>
-        </div>
-
-        <div class="card">
-            <h2>📊 Real-Time Consensus Dossier & Audit Log</h2>
-            <div class="terminal" id="outputConsole">// Gail Breast Cancer Risk Operations Console Ready
-// Connection established with Air-Gapped Supervisor
-// Cryptographic HMAC-SHA256 audit ledger loaded.
-// Ready for live task payload dispatch...</div>
-        </div>
-    </div>
-
-    <script>
-        async function runAudit() {
-            const consoleEl = document.getElementById('outputConsole');
-            consoleEl.innerText = "// Dispatching task across specialized workers...
-// Invoking InvariantQCWorker, SafetyEscalationWorker, ProtocolWorker...";
-
-            const payload = {
-                task_id: document.getElementById('task_id').value,
-                target_identifier: document.getElementById('target_id').value,
-                primary_metric: parseFloat(document.getElementById('primary_metric').value),
-                secondary_metric: parseFloat(document.getElementById('secondary_metric').value),
-                status_descriptor: document.getElementById('status_descriptor').value,
-                is_critical_flag: document.getElementById('is_critical').checked
-            };
-
-            try {
-                const res = await fetch('/api/audit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-                consoleEl.innerText = JSON.stringify(data, null, 2);
-                document.getElementById('m-tasks').innerText = parseInt(document.getElementById('m-tasks').innerText) + 1;
-                document.getElementById('m-audit').innerText = parseInt(document.getElementById('m-audit').innerText) + 1;
-            } catch (err) {
-                consoleEl.innerText = "// Offline / Simulation Output:\n" + JSON.stringify({
-                    dossier_id: "DOSSIER-SIM-" + Math.floor(Math.random()*10000),
-                    system: "gail-breast-cancer-risk",
-                    domain: "Clinical & Cryptographic AI",
-                    task_id: payload.task_id,
-                    overall_urgency: payload.is_critical_flag ? "CRITICAL_STAT_PANIC" : "ELEVATED_RISK",
-                    integrity_status: "DISCORDANT_ANOMALY",
-                    alerts: [
-                        { worker: "InvariantQCWorker", alert: "Primary metric exceeds upper reference bound" },
-                        { worker: "SafetyEscalationWorker", alert: "Critical emergency interlock flag active" }
-                    ],
-                    audit_hash: "HMAC_SHA256_e83f9a72b941d6c381f9"
-                }, null, 2);
-            }
-        }
-    </script>
-</body>
+<body><main>
+  <h1>Operational rules console</h1>
+  <p>Local FastAPI demonstration for generic rule-based worker evaluation and an in-memory audit chain.</p>
+  <div class="notice" role="note"><strong>Not a Gail/BCRAT calculator.</strong> This console has arbitrary demonstration thresholds, not validated breast-cancer risk estimates or CAP/CLSI certification. Do not enter patient-identifiable data. For clinical risk estimates, use the <a href="https://bcrisktool.cancer.gov/" target="_blank" rel="noopener noreferrer">official NCI BCRAT tool</a>.</div>
+  <p id="stats" class="stats" aria-live="polite">Checking backend availability…</p>
+  <div class="grid">
+    <section class="card" aria-labelledby="form-title">
+      <h2 id="form-title">Submit example task</h2>
+      <form id="audit-form">
+        <label for="api_key">Local API key (not stored)</label>
+        <input id="api_key" type="password" required autocomplete="off">
+        <label for="task_id">Task identifier</label>
+        <input id="task_id" required maxlength="80" value="TASK-DEMO-001">
+        <label for="target_id">Non-identifying target code</label>
+        <input id="target_id" required maxlength="80" value="DEMO-01">
+        <label for="primary_metric">Primary demo metric</label>
+        <input id="primary_metric" type="number" step="any" required value="29.4">
+        <label for="secondary_metric">Secondary demo metric</label>
+        <input id="secondary_metric" type="number" step="any" required value="14.8">
+        <label for="status_descriptor">Status descriptor</label>
+        <input id="status_descriptor" required maxlength="80" value="NOMINAL">
+        <label class="check"><input id="is_critical" type="checkbox">Explicit critical flag</label>
+        <button type="submit" id="submit">Evaluate example task</button>
+      </form>
+    </section>
+    <section class="card" aria-labelledby="result-title">
+      <h2 id="result-title">Backend response</h2>
+      <pre id="result" aria-live="polite">Submit an example task to view the server response. No simulated audit signatures will be generated.</pre>
+      <small>Records are held in server memory only. The browser does not save the API key or task inputs.</small>
+    </section>
+  </div>
+  <script>
+    "use strict";
+    const form = document.getElementById("audit-form");
+    const result = document.getElementById("result");
+    const stats = document.getElementById("stats");
+    const submit = document.getElementById("submit");
+    async function readStatus() {
+      try {
+        const response = await fetch("/metrics", {cache: "no-store"});
+        if (!response.ok) throw new Error("Backend unavailable (" + response.status + ")");
+        const data = await response.json();
+        stats.textContent = "Backend available · " + data.dossiers_processed_total +
+          " demo tasks processed · " + data.audit_blocks_total + " in-memory audit blocks";
+      } catch (error) {
+        stats.textContent = "Backend unavailable. Start the FastAPI server to use this console.";
+      }
+    }
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault();
+      const primary = Number(document.getElementById("primary_metric").value);
+      const secondary = Number(document.getElementById("secondary_metric").value);
+      if (!Number.isFinite(primary) || !Number.isFinite(secondary)) {
+        result.textContent = "Both metrics must be finite numbers.";
+        return;
+      }
+      const payload = {
+        task_id: document.getElementById("task_id").value,
+        target_identifier: document.getElementById("target_id").value,
+        primary_metric: primary, secondary_metric: secondary,
+        status_descriptor: document.getElementById("status_descriptor").value,
+        is_critical_flag: document.getElementById("is_critical").checked
+      };
+      submit.disabled = true;
+      result.textContent = "Submitting…";
+      try {
+        const response = await fetch("/api/audit", {
+          method:"POST", headers: {
+            "Content-Type":"application/json",
+            "X-API-Key":document.getElementById("api_key").value
+          }, body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error("HTTP " + response.status + ": " + JSON.stringify(data));
+        result.textContent = JSON.stringify(data, null, 2);
+        await readStatus();
+      } catch (error) {
+        result.textContent = "No result generated. " + error.message;
+      } finally {
+        submit.disabled = false;
+      }
+    });
+    readStatus();
+  </script>
+</main></body>
 </html>
